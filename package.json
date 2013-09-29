@@ -1,0 +1,15 @@
+{
+    "name": "angularjs-server",
+    "version": "0.0.1",
+    "description": "A specialized server for AngularJS applications",
+    "author": "Martin Atkins <mart@degeneration.co.uk>",
+    "keywords": ["angularjs"],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/apparentlymart/angularjs-server.git"
+    },
+    "main": "./lib/main",
+    "dependencies": {
+        "angularcontext": "~0.0.4"
+    }
+}
