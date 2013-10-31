@@ -9,7 +9,8 @@ app.controller(
 );
 
 app.config(
-    function ($routeProvider) {
+    function ($routeProvider, $locationProvider) {
+        $locationProvider.html5Mode(true);
         $routeProvider.when(
             '/weather',
             {
