@@ -10,6 +10,7 @@
     },
     "main": "./lib/main",
     "dependencies": {
-        "angularcontext": "~0.0.4"
+        "angularcontext": "~0.0.4",
+        "escape-html": "1.0.0"
     }
 }
