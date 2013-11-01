@@ -1,5 +1,5 @@
 
-var app = angular.module('simpleapp', []);
+var app = angular.module('simpleapp', ['ngRoute']);
 
 app.controller(
     'simpleController',

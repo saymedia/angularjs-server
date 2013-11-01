@@ -17,10 +17,10 @@ var angularMiddlewares = angularserver.middlewares(
             path.join(__dirname, 'simpleapp.js')
         ],
         clientScripts: [
-            '/static/angular.js',
-            '/static/angular-route.js',
-            '/static/simpleapp.js',
-            '/static/simpleapp-client.js'
+            '/:static/angular.js',
+            '/:static/angular-route.js',
+            '/:static/simpleapp.js',
+            '/:static/simpleapp-client.js'
         ],
         angularModules: [
             'simpleapp'
