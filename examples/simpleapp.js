@@ -8,6 +8,13 @@ app.controller(
     }
 );
 
+app.controller(
+    'weatherController',
+    function (weatherData, $scope) {
+        $scope.weather = weatherData;
+    }
+);
+
 app.config(
     function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
@@ -22,9 +29,7 @@ app.config(
                         ).then(function (resp) { return resp.data; });
                     }
                 },
-                controller: function (weatherData, $scope) {
-                    $scope.weather = weatherData;
-                }
+                controller: 'weatherController'
             }
         );
         $routeProvider.otherwise(
