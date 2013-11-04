@@ -41,7 +41,7 @@ sdr.provider(
             sdrPrefix = prefix;
         };
 
-        this.$get = function ($rootScope, $location, $window) {
+        this.$get = function ($rootScope, $location, $window, $injector, $q, $routeParams, $http) {
 
             var $route = {};
 
@@ -67,9 +67,34 @@ sdr.provider(
                     next.$$route = clientRoute;
                     // TODO: peek at clientRoute.resolve and look up anything the server didn't,
                     // and handle serverRoute.localServices.
+                    var resolveKey;
+                    if (serverRoute.localServices) {
+                        for (resolveKey in serverRoute.localServices) {
+                            next.locals[resolveKey] = $injector.get(serverRoute.localServices[resolveKey]);
+                        }
+                    }
+                    if (clientRoute && clientRoute.resolve) {
+                        for (resolveKey in clientRoute.resolve) {
+                            if (next.locals[resolveKey] === undefined) {
+                                next.locals[resolveKey] = (
+                                    locals[key] = angular.isString(value) ?
+                                        $injector.get(value) :
+                                        $injector.invoke(value)
+                                );
+                            }
+                        }
+                    }
 
-                    $rootScope.$broadcast('$routeChangeSuccess', next, last);
-                    $rootScope.$digest();
+                    $q.all(next.locals).then(
+                        function () {
+                            if (next == $route.current) {
+                                if (next) {
+                                    angular.copy(next.params, $routeParams);
+                                }
+                                $rootScope.$broadcast('$routeChangeSuccess', next, last);
+                            }
+                        }
+                    );
                 }
 
                 // if we're rendering the result of an HTML snapshot response then
@@ -87,7 +112,13 @@ sdr.provider(
                 }
                 else {
                     var apiUrl = sdrPrefix + $location.path() + $window.location.search;
-                    console.log('will fetch', apiUrl);
+
+                    $http.get(apiUrl).then(
+                        function (response) {
+                            var data = response.data;
+                            completeRouteChange(data.route);
+                        }
+                    );
                 }
             };
 
