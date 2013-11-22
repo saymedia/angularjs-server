@@ -9,9 +9,17 @@
         "url": "git://github.com/apparentlymart/angularjs-server.git"
     },
     "main": "./lib/main",
+    "scripts": {
+        "test": "nodeunit tests/",
+        "lint": "jshint -c .jshintrc lib/* tests/*"
+    },
     "dependencies": {
         "angularcontext": "~0.0.4",
         "escape-html": "1.0.0",
         "express": "~3.4.4"
+    },
+    "devDependencies": {
+        "nodeunit": "*",
+        "jshint": "2.1.11"
     }
 }
