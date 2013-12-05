@@ -3,7 +3,7 @@
 var path = require('path');
 
 exports.testWrapMiddleware = function (test) {
-    test.expect(9);
+    test.expect(11);
     var angularServer = require('../lib/main.js');
 
     var server = angularServer.Server(
@@ -22,19 +22,28 @@ exports.testWrapMiddleware = function (test) {
     var expectedNext = {};
 
     var mw = server.wrapMiddlewareWithAngular(
-        function (gotReq, gotRes, gotNext, gotContext) {
+        function (gotReq, gotRes, gotNext, gotInjector) {
             test.ok(gotReq === expectedReq, 'request passed through');
             test.ok(gotRes === expectedRes, 'response passed through');
             test.ok(gotNext === expectedNext, 'next passed through');
-            test.ok(gotContext, 'context is truthy');
+            test.ok(gotInjector, 'injector is truthy');
 
-            var angular = gotContext.getAngular();
+            var angular = gotInjector.angular;
 
             test.ok(angular, 'angular is truthy');
             test.ok(angular.fake, 'angular is fake');
             test.ok(
                 angular.modulesRegistered.indexOf('angularjs-server') !== -1,
                 'angularjs-server module registered'
+            );
+
+            test.ok(
+                angular.requestsRegistered.length === 1,
+                'nodejs request was registered exactly once'
+            );
+            test.ok(
+                angular.requestsRegistered[0] === expectedReq,
+                'the registered request is what we expected'
             );
 
             test.done();
