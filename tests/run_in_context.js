@@ -18,11 +18,11 @@ exports.testRunInContext = function (test) {
     test.ok(server.runInContext, 'server.runInContext is truthy');
 
     server.runInContext(
-        function (context, error) {
+        function ($injector, error) {
             test.ok(error === undefined, 'error is undefined');
-            test.ok(context, 'context is truthy');
+            test.ok($injector, '$injector is truthy');
 
-            var angular = context.getAngular();
+            var angular = $injector.angular;
 
             test.ok(angular, 'angular is truthy');
             test.ok(angular.fake, 'angular is fake');
