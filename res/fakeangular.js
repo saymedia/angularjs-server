@@ -53,5 +53,9 @@ window.angular = {
     element: function () {
         // just enough element-ness to keep the tests happy
         return [];
+    },
+    bootstrap: function (element, modules) {
+        // just make the fake injector. We don't care about the DOM.
+        return angular.injector(modules);
     }
 };

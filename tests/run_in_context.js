@@ -10,7 +10,8 @@ exports.testRunInContext = function (test) {
         {
             serverScripts: [
                 path.join(__dirname, '../res/fakeangular.js')
-            ]
+            ],
+            template: '<html></html>'
         }
     );
 
