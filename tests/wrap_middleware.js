@@ -21,6 +21,12 @@ exports.testWrapMiddleware = function (test) {
     var expectedRes = {};
     var expectedNext = {};
 
+    expectedReq.get = function () {
+        return 'baz';
+    };
+    expectedReq.protocol = 'http';
+    expectedReq.url = '/foo';
+
     var mw = server.wrapMiddlewareWithAngular(
         function (gotReq, gotRes, gotNext, gotInjector) {
             test.ok(gotReq === expectedReq, 'request passed through');
