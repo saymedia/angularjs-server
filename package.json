@@ -14,7 +14,7 @@
         "lint": "jshint -c .jshintrc lib/* tests/*"
     },
     "dependencies": {
-        "angularcontext": "~0.0.12",
+        "angularcontext": "0.0.12",
         "escape-html": "1.0.0",
         "express": "~3.4.4"
     },
