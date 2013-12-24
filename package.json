@@ -1,6 +1,6 @@
 {
     "name": "angularjs-server",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "A specialized server for AngularJS applications",
     "author": "Martin Atkins <mart@degeneration.co.uk>",
     "keywords": ["angularjs"],
