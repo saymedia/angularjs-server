@@ -1,6 +1,6 @@
 {
     "name": "angularjs-server",
-    "version": "0.0.17",
+    "version": "0.0.18",
     "description": "A specialized server for AngularJS applications",
     "author": "Martin Atkins <mart@degeneration.co.uk>",
     "keywords": ["angularjs"],
@@ -14,7 +14,7 @@
         "lint": "jshint -c .jshintrc lib/* tests/*"
     },
     "dependencies": {
-        "angularcontext": "0.0.14",
+        "angularcontext": "0.0.15",
         "escape-html": "1.0.0",
         "express": "~3.4.4"
     },
