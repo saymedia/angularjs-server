@@ -9,7 +9,7 @@ var template = fs.readFileSync(templateFile, {encoding:'utf8'});
 var staticDir = __dirname;
 
 var app = express();
-var angularMiddlewares = angularserver.middlewares(
+var angularMiddlewares = angularserver.Server(
     {
         template: template,
         serverScripts: [
