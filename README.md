@@ -1,26 +1,210 @@
-# angularjs-server
+# AngularJS-Server
 
-*Run AngularJS apps on the server*
+Run AngularJS apps on the server, using NodeJS.
 
 ## Introduction
 
-It uses the [angularcontext](https://github.com/apparentlymart/node-angularcontext) module to run parts of the
-application on the server. It's hoped that this will eventually result in the following benefits:
+[AngularJS](https://angularjs.org/) is an awesome framework for building rich single page applications.
+However, one significant downside of single page applications is that they are often inscrutable to
+non-browser clients like search engines, RSS readers and social network indexers.
 
-* True 404 errors and 302 redirects when the first request does not map to a valid page, rather than serving
-the bootstrap HTML everwhere.
+AngularJS-Server is a reimplementation of several core AngularJS modules with the goal of making it possible
+to run AngularJS applications on the server, using NodeJS.
 
-* Server-side rendering of the page for the benefit of robots, while still retaining the dynamic behavior for browsers.
+In the simple case this allows a well-behaved application (one which interacts only with AngularJS's API,
+not with the browser directly) to render its pages on the server, generating a full HTML page that is readable by
+search engines. It also enables more advanced use-cases of sharing code between client and server, such as
+running only parts of an AngularJS application on the server to produce an RSS feed whose content is
+rendered from the same templates as the site itself.
 
-* Run the 'resolve' steps for routes on the server so that the page can be rendered in fewer round-trips.
+AngularJS-Server is built on [jsdom](https://github.com/tmpvar/jsdom), an implementation of the DOM API
+for Node, and [angularcontext](https://github.com/apparentlymart/node-angularcontext), which provides
+a lightweight container in which to instantiate your AngularJS application.
 
-* Generate XML sitemaps and RSS feeds entirely on the server but using the AngularJS app itself to do so.
+## Get Started
 
-This server is primarily aimed at sites where it's appropriate to cache responses for a while, since performance will
-be degraded if every request needs to be processed both on the server and the client. The best configuration is to
-run something like Varnish in front of this server and configure it to cache for as long as possible and to serve
-stale responses until the cache is freshened in the background. This way the above benefits can be realized while
-still providing fast responses to everyone.
+A simple application can be run in AngularJS-Server using only a small amount of NodeJS application
+bootstrap code, using [express](http://expressjs.com/):
+
+```js
+var angularserver = require('angularjs-server');
+var express = require('express');
+var express = require('fs');
+
+// The main index.html file for your application, that you'd normally serve to browsers to start the app.
+// This should have any script tags for your application removed from it, as they will be added separately.
+var templateFile = 'index.html';
+var template = fs.readFileSync(templateFile);
+
+// Directory to serve static resources from.
+var staticDir = 'static';
+
+var app = express();
+var angularMiddlewares = angularserver.Server({
+    template: template,
+
+    // Scripts that should be loaded into the angularjs context on the server.
+    // This should include AngularJS itself and all of the source files required
+    // to register your Angular modules, but *not* code to bootstrap the
+    // application.
+    serverScripts: [
+        'angular.js',
+        'angular-route.js',
+        'yourapp.js'
+    ],
+
+    // Scripts that should be loaded by the client browser to render the page.
+    // This should include the same set of files to load Angular itself and
+    // your Angular modules, but should also include additional code that
+    // calls into angular.bootstrap to kick off the application.
+    // Unlike serverScripts, these are URLs.
+    clientScripts: [
+        '/static/angular.js',
+        '/static/angular-route.js',
+        '/static/yourapp.js',
+        '/static/clientonly.js'
+    ],
+
+    // Angular modules that should be used when running AngularJS code on
+    // the server. 'ng' is included here by default, along with the
+    // special AngularJS-Server overrides of 'ng'.
+    angularModules: [
+        'yourapp'
+    ]
+});
+
+// Make the scripts and other assets available to the browser.
+app.use('/static', express.static(staticDir));
+
+// Serve all other URLs by rendering the Angular page on the server.
+app.use(angularMiddlewares.htmlGenerator);
+```
+
+The above arranges for the HTML delivered by the server to include both the raw template for AngularJS
+*and* the pre-rendered version for robots. This is the minimal basic implementation of AngularJS-Server.
+For a more complete example making use of some additional features, see [the weather example](examples/weather).
+
+## Advanced Usage
+
+The AngularJS-Server core includes a simple middleware for rendering snapshots from a NodeJS application. However, it
+also provides an API for creating custom integrations between normal NodeJS server code and AngularJS application code.
+
+### Server-defined Routes
+
+The HTML generated by the ``htmlGenerator`` are compatible with the alternative ``$route`` implementation
+[angularjs-sdr](https://github.com/saymedia/angularjs-sdr), which moves the route resolution steps onto the server.
+For applications using the ``resolve`` property on route definitions, this can improve performance by retrieving
+necessary data on the server before returning the page, allowing the page to be rendered with no additional
+``XMLHttpRequest`` lookups.
+
+To use this mechanism it is necessary to expose an "SDR API" endpoint on the server:
+
+```js
+app.use('/:', angularMiddlewares.sdrApi);
+```
+
+With this in place, the app should then be configured to load the ``angularjs-sdr`` code on the client (i.e. add it
+to te ``clientScripts`` list in the AngularJS-Server instantiation) and then use the ``sdr`` module in place of
+``ngRoute``.
+
+If all data loading is confined to route resolution functions then this means that every route transition will
+lead to exactly one fetch from the server, to resolve the route. The server will then fetch any necessary data
+before returning a flattened route payload to the client. As a further trick the initial route data is inlined within
+the HTML on first page load, so the first page view may be displayed with no additional data fetches whatsoever.
+
+In return for this optimization your app must comply with some additional constraints. Most notably, any data returned
+by route resolution *must* be JSON-compatible, since this is how the data is transmitted to the client from the
+server. Notably also this mechanism works by overriding ``$route``, so it will work only for applications using
+the standard AngularJS router.
+
+### AngularJS-enabled Middleware
+
+One way to implement a custom integration is to "wrap" a middleware with an Angular context. This means that
+AngularJS-server will instantiate the AngularJS application for each request and pass an injector for it as an
+additional parameter to the middleware. For (contrived) example:
+
+```js
+app.use(
+    angularMiddlewares.wrapMiddlewareWithAngular(
+        function (req, res, next, injector) {
+            var $rootScope = injector.get('$rootScope');
+            var $interpolate = injector.get('$interpolate');
+            $rootScope.name = 'world';
+            var greeting = $interpolate('Hello, {{name}}')($rootScope);
+            res.end(greeting);
+        }
+    )
+);
+```
+
+Here we use the injector to get hold of the root scope and the ``$interpolate`` service, and use the latter
+to interpolate a name into a greeting string. The injector can be used to obtain a reference to any service
+available from the configured AngularJS modules.
+
+When accessed in this way, by default the global template is *not* compiled, since many uses of this
+mechanism are not expected to use the template at all. However, if a full-page compile is required then
+this can be arranged by calling ``injector.bootstrap()`` early on in the request handling. After this,
+``$rootElement`` will be available in the injector as normal.
+
+### Run Arbitrary Code Against an Angular app
+
+The lowest-level interaction with AngularJS-Server is to simply obtain an injector and do to it what you will.
+This is accomplished as follows:
+
+```js
+angularserver.runInContext(
+    function (injector) {
+        // ... whatever you want
+    }
+);
+```
+
+One way to use this mechanism is to make use of configuration information from the Angular application during
+the application setup process. For example, one can request the ``$routeProvider`` service and use the routes configured
+within it to conditionally create specific URL routes in an Express application.
+
+Injectors created via this mechanism are not initially attached to a request, so the ``$location`` service will
+be inoperable. The ``wrapMiddlewareWithAngular`` mechanism introduced above is essentially a wrapper around
+``runInContext`` that pre-configures ``$location`` based on the URL from the incoming request.
+
+## How It Works
+
+Rather than emulating an entire browser, as some sites do using PhantomJS, AngularJS-Server simply shims the AngularJS
+API to work better in the NodeJS server environment.
+
+This means that performance is likely to be better, and allows for some more interesting interactions between the Angular app
+and the server, but this solution is not so well suited to applications that routinely bypass the AngularJS API and access
+browser DOM functionality directly. ``jsdom`` provides an implementation of *much* of the DOM API, but certain things like
+measuring window size or taking element positions obviously make no sense in an environment with no renderer.
+
+Pre-existing applications may therefore need to be lightly modified in order to work within the assumptions of this
+container. Anecdotally Say Media managed to get its reasonably-complex site rendering application working within these
+constraints with a few weeks of investment, although more hours were subsequently spent optimizing the result for
+performance due to different constraints in the server environment.
+
+## Limitations and Special Considerations
+
+### Performance Considerations
+
+The limits on acceptable performance characteristics can differ quite significantly between client and server. Although
+AngularJS-Server can run many AngularJS applications as-is, there are some gotchas to keep in mind:
+
+* Client-side code consumes memory and CPU only on the client's machine, whereas of course server resources are shared between all clients.
+
+* In particular, the AngularJS digest mechanism is synchronous, so an application with many scope watchers may experience significant pauses in execution during digest, during which the NodeJS process is blocked from all other JavaScript code execution. For such applications it is pertinent to interact with AngularJS-Server only in separate worker processes, to avoid stalling the event loop in the main NodeJS process.
+
+* Applications that do lots of object instantiation may find that their memory usage grows faster than the V8 garbage collector is able to reclaim it -- at least, without significant GC pauses. For such applications it may be necessary to set a stricter memory limit (at the expense of increased GC CPU usage when memory is tight) or again implement a solution with AngularJS-Server access happening in worker processes that can be periodically rebooted to reclaim memory, asynchronously from main request handling.
+
+* JSDOM's priority is correct implementation of the DOM API rather than performance, and for many operations JSDOM is significantly slower than state-of-the-art browser DOM implementations. Applications that freqently update or otherwise traverse the DOM should expect visibly slower performance when running in the server, and high CPU usage with the same implications described above. This can be mitigated by strategies such as delaying template compilation until data loading has stablized, to avoid incremental DOM updates as data loads.
+
+### Requires Standard AngularJS Routing
+
+The built-in features for server-side rendering of AngularJS-powered pages require an application using the standard
+AngularJS ``$route`` service, since they work by overriding this service to intercept route registration.
+
+The lower-level features -- ``wrapMiddlewareWithAngular`` and ``runInContext`` -- have no specific service dependencies.
+In fact, it may be possible to use these mechanisms to implement comparable features for other route implementations,
+but for the moment that is left as an exercise for the reader.
 
 ## Status
 
@@ -44,6 +228,9 @@ features are in use in production:
 Variants of the remaining functions are in use in the Say Media content delivery platform, but their implementation has been
 modified beyond what is shown in this codebase. Once their implementations are more stable we intend to update this codebase,
 at which point the interface will almost certainly change.
+
+In the mean time we welcome others to experiment with using AngularJS-Server on their own applications and share their
+experiences in [the AngularJS-Server Google Group](https://groups.google.com/forum/#!forum/angularjs-server).
 
 ## Contributing
 
