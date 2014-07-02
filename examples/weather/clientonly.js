@@ -61,9 +61,7 @@ sdr.provider(
                     var path = serverRoute.path;
                     var clientRoute = routes[path];
                     next.controller = serverRoute.controller;
-                    next.template = serverRoute.template;
                     next.locals = serverRoute.locals;
-                    next.locals.$template = next.template;
                     next.$$route = clientRoute;
                     // TODO: peek at clientRoute.resolve and look up anything the server didn't,
                     // and handle serverRoute.localServices.
