@@ -23,7 +23,7 @@ app.config(
         $routeProvider.when(
             '/weather',
             {
-                template: '<h2>Select City</h2><ul><li><a href="/weather/sf">San Francisco</a></li><li><a href="/weather/ny">New York</a></li></ul>'
+                templateUrl: '/:static/partials/choosecity.html'
             }
         );
         $routeProvider.when(
