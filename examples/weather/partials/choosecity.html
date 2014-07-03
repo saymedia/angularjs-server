@@ -3,7 +3,7 @@
 <div class="row" ng-repeat="cityRow in cityRows">
 
 <div class="col-md-6 city" ng-repeat="city in cityRow">
-<a ng-href="/weather/{{ city.code }}">
+<a ng-href="/{{ city.code }}">
 <img ng-src="/:static/images/cities/{{ city.code }}.jpg">
 <span class="cityname">{{ city.displayName }}</span>
 </a>

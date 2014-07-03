@@ -71,14 +71,14 @@ app.config(
 
         $locationProvider.html5Mode(true);
         $routeProvider.when(
-            '/weather',
+            '/',
             {
                 templateUrl: '/:static/partials/choosecity.html',
                 controller: 'chooseCityController'
             }
         );
         $routeProvider.when(
-            '/weather/:city',
+            '/:city',
             {
                 templateUrl: '/:static/partials/weather.html',
                 resolve: {
@@ -111,7 +111,7 @@ app.config(
         );
         $routeProvider.otherwise(
             {
-                template: '<a href="/weather">Weather</a>'
+                template: '<a href="/">Weather</a>'
             }
         );
     }
