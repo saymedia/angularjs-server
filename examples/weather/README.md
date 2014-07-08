@@ -16,3 +16,6 @@ weather data being loaded from the remote API on the server. As well as improvin
 performance on initial page load by eliminating a round-trip, this also allows the use of
 an API endpoint that wouldn't actually be callable via a cross-site XMLHttpRequest if
 deferred to the client.
+
+A very lightly modified version of this example is running as a live demo at
+http://angularjs-server-weather.herokuapp.com/ .
