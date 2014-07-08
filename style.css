@@ -1,0 +1,34 @@
+
+.ng-cloak {
+    display: none;
+}
+
+.city img {
+    width: 100%;
+}
+.city {
+    margin-bottom: 2em;
+}
+.city a {
+    color: inherit ! important;
+    display: block;
+}
+.city .cityname {
+    font-size: 1.5em;
+}
+
+.cityweather {
+    border-top: rgba(86,61,124,.15) solid 1px;
+    border-bottom: rgba(86,61,124,.15) solid 1px;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+
+.weathersymbol {
+    height: 300px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center right;
+}

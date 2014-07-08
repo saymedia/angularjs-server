@@ -1,0 +1,14 @@
+{
+    "name": "angularjs-server-weather",
+    "version": "0.0.0",
+    "description": "AngularJS-Server Weather Example",
+    "author": "Martin Atkins <mart@degeneration.co.uk>",
+    "keywords": ["angularjs"],
+    "dependencies": {
+        "angularjs-server": "0.0.20",
+        "express": "~3.4.4"
+    },
+    "engines": {
+        "node": "0.10.x"
+    }
+}

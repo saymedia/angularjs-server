@@ -1,0 +1,39 @@
+<h1>Weather for {{city.name}}</h1>
+
+<div class="row cityweather">
+
+<div class="col-md-8 cityweatherdetails">
+
+<h2>{{ weather.main }}</h2>
+
+<div class="row">
+
+<dl class="col-md-4">
+<dt>Temperature</dt>
+<dl>{{ city.main.tempC }}&deg;C</dl>
+<dt>Humidity</dt>
+<dl>{{ city.main.humidity }}%</dl>
+<dt>Pressure</dt>
+<dl>{{ city.main.pressure }} hPa</dl>
+</dl>
+
+<dl class="col-md-4">
+<dt>Cloud Cover</dt>
+<dl>{{ city.clouds.all }}%</dl>
+<dt>Wind Speed</dt>
+<dl>{{ city.wind.speed }}mps, {{ city.wind.deg }}&deg;</dl>
+</dl>
+
+</div>
+
+</div>
+
+<div class="col-md-4 weathersymbol" style="background-image: url(/:static/images/weather/{{ weather.icon }}.svg)"></div>
+
+</div>
+
+
+<div class="attributions pull-right">
+<p><small>Demonstration app for <a href="https://github.com/saymedia/angularjs-server">angularjs-server</a></small></p>
+
+</div>

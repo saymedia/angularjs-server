@@ -1,0 +1,30 @@
+<h1>Choose a City</h1>
+
+<div class="row" ng-repeat="cityRow in cityRows">
+
+<div class="col-md-6 city" ng-repeat="city in cityRow">
+<a ng-href="/{{ city.code }}">
+<img ng-src="/:static/images/cities/{{ city.code }}.jpg">
+<span class="cityname">{{ city.displayName }}</span>
+</a>
+</div>
+
+</div>
+
+<ul>
+<li ng-repeat="city in cities"><a ng-href="/weather/{{ city.code }}">{{ city.displayName }}</a></li>
+</ul>
+
+<div class="attributions pull-right">
+<p><small>Demonstration app for <a href="https://github.com/saymedia/angularjs-server">angularjs-server</a></small></p>
+
+<p><small>
+<a href="https://www.flickr.com/photos/billdamon/12032359823">Boston Photo</a> by Bill Damon<br>
+<a href="https://www.flickr.com/photos/quintanomedia/12007722056">New York Photo</a> by Anthony Quintano</a><br>
+<a href="https://www.flickr.com/photos/rayterrill/7965688918">Portland Photo</a> by Ray Terrill<br>
+<a href="https://www.flickr.com/photos/toasty/723687023">San Francisco Photo</a> by Kenneth Lu<br>
+<a href="https://www.flickr.com/photos/anupamsrivastava/9618170856">Seattle Photo</a> by Anupam_ts<br>
+All Photos Under Creative Commons Licences<br>Permitting Commercial Use
+</small></p>
+
+</div>
