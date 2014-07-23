@@ -3,7 +3,7 @@
 var path = require('path');
 
 exports.testWrapMiddleware = function (test) {
-    test.expect(11);
+    test.expect(13);
     var angularServer = require('../lib/main.js');
 
     var server = angularServer.Server(
@@ -41,6 +41,16 @@ exports.testWrapMiddleware = function (test) {
             test.ok(
                 angular.modulesRegistered.indexOf('angularjs-server') !== -1,
                 'angularjs-server module registered'
+            );
+
+            test.ok(
+                angular.modulesRegistered.indexOf('ngRoute') !== -1,
+                'fake ngRoute module registered'
+            );
+
+            test.ok(
+                angular.modulesRegistered.indexOf('ngAnimate') !== -1,
+                'fake ngAnimate module registered'
             );
 
             test.ok(
