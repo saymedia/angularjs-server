@@ -29,7 +29,7 @@ bootstrap code, using [express](http://expressjs.com/):
 ```js
 var angularserver = require('angularjs-server');
 var express = require('express');
-var express = require('fs');
+var fs = require('fs');
 
 // The main index.html file for your application, that you'd normally serve to browsers to start the app.
 // This should have any script tags for your application removed from it, as they will be added separately.
