@@ -152,7 +152,7 @@ The lowest-level interaction with AngularJS-Server is to simply obtain an inject
 This is accomplished as follows:
 
 ```js
-angularserver.runInContext(
+angularMiddlewares.runInContext(
     function (injector) {
         // ... whatever you want
     }
