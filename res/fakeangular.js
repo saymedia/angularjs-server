@@ -2,23 +2,33 @@
 // This is a fake angular-like thing that we can load into an angular context for tests.
 var modulesRegistered = [];
 var requestsRegistered = [];
+var factoriesRegistered = {};
+var providersRegistered = {};
+var directivesRegistered = {};
 window.angular = {
     fake: true,
     modulesRegistered: modulesRegistered,
     requestsRegistered: requestsRegistered,
+    factoriesRegistered: factoriesRegistered,
+    providersRegistered: providersRegistered,
+    directivesRegistered: directivesRegistered,
     module: function (name, deps) {
         if (deps) {
             modulesRegistered.push(name);
         }
-        // just enough module to keep ngoverrides happy
+        // just enough module to keep ngoverrides happy; store the code
+        // so we can test it
         return {
-            factory: function (name) {
+            factory: function (name, func) {
+                factoriesRegistered[name] = func;
                 return this;
             },
-            provider: function (name) {
+            provider: function (name, func) {
+                providersRegistered[name] = func;
                 return this;
             },
-            directive: function (name) {
+            directive: function (name, func) {
+                directivesRegistered[name] = func;
                 return this;
             }
         };
