@@ -73,5 +73,5 @@ exports.testNgoverrides = function (test) {
     req.protocol = 'http';
     req.url = '/foo';
 
-    mw(req, {},{});
+    mw(req, {}, {});
 };
