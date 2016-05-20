@@ -14,7 +14,7 @@
         "lint": "jshint -c .jshintrc lib/* tests/*"
     },
     "dependencies": {
-        "angularcontext": "0.0.17",
+        "angularcontext": "0.0.20",
         "escape-html": "1.0.0",
         "express": "~3.4.4"
     },
@@ -22,7 +22,7 @@
         "nodeunit": "*",
         "jshint": "2.1.11"
     },
-    "engines" : { 
-        "node" : "~0.10.x" 
+    "engines" : {
+        "node" : ">4"
     }
 }
