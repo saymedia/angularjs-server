@@ -2,6 +2,19 @@
 
 Run AngularJS apps on the server, using NodeJS.
 
+----
+
+This package is **no longer maintained** and not recommended for use. While it did run in production at
+Say Media for several years, other approaches are now being used and this package is no longer being
+maintained for newer versions of AngularJS or Node.
+
+The code is preserved here for posterity, in case anyone still wishes to use it, but we'd recommend
+instead considering [Angular Universal](https://angular.io/guide/universal) (for Angular 2, rather than
+AngularJS) or one of the various hosted services that can provide server-side rendering for single-page
+applications within their own infrastructure.
+
+----
+
 ## Introduction
 
 [AngularJS](https://angularjs.org/) is an awesome framework for building rich single page applications.
@@ -208,13 +221,11 @@ but for the moment that is left as an exercise for the reader.
 
 ## Status
 
-Parts of this codebase are currently in use in production on Say Media-run content sites like
-[Bio](http://biography.com/) and [xoVain](http://www.xovain.com/). However, the interface is not finalized and will
-evolve as we learn more about this problem space.
+Parts of this codebase were used in production on Say Media-run content sites. However, Say Media is no longer using
+AngularJS for this purpose and so this codebase is no longer used or maintained.
 
-Therefore this codebase is currently shared primarily as an illustration of a possible strategy for making
-AngularJS-based sites robot-friendly, rather than as a ready-to-go solution. However, at the time of writing the following
-features are in use in production:
+This codebase was shared  primarily as an illustration of a possible strategy for making AngularJS-based sites
+robot-friendly, rather than as a ready-to-go solution. However, the following features were used in production:
 
 * All of the AngularJS service overrides in `ngoverrides.js`. These replace several key AngularJS services with more
   appropriate implementations for the server environment.
@@ -225,26 +236,12 @@ features are in use in production:
 * The `middlewareWithAngular` function, which decorates a connect middleware with code to spin up an AngularJS context
   and pass its injector as an extra parameter.
 
-Variants of the remaining functions are in use in the Say Media content delivery platform, but their implementation has been
-modified beyond what is shown in this codebase. Once their implementations are more stable we intend to update this codebase,
-at which point the interface will almost certainly change.
-
-In the mean time we welcome others to experiment with using AngularJS-Server on their own applications and share their
-experiences in [the AngularJS-Server Google Group](https://groups.google.com/forum/#!forum/angularjs-server).
+Variants of the remaining functions were used in the Say Media content delivery platform, but their implementation was
+modified beyond what is shown in this codebase.
 
 ## Contributing
 
 Development environment setup is pretty standard: just clone the git repo and run `npm install`
 within it.
 
-Contributions are welcome but are assumed to be licensed under the MIT license, as this package
-itself is. Please be sure to run the unit tests (such that they are) and the linter on your
-modified version, and then open a pull request.
-
-```
-npm test
-npm run-script lint
-```
-
-The project's code style is represented by the `.jshintrc` file but please also attempt to remain
-consistent with the prevailing style even if particular details *aren't* tested for by the linter.
+Since this package is no longer maintained, we are no longer able to accept contributions.
